@@ -1,0 +1,47 @@
+/* theme--light css */
+.patient-btn.v-btn--floating.v-btn--small {
+    z-index: 99;
+}
+
+.patient-card-header {
+    display: -webkit-inline-box;
+    position: relative;
+}
+
+.patient-card-header .close-model {
+    position: absolute;
+    right: 15px;
+}
+
+.v-input__prepend-outer {
+    margin-right: 20px !important;
+}
+
+.required {
+    color: red;
+}
+
+.success--text {
+    color: #246962 !important;
+}
+
+
+/* theme--dark css */
+.theme--dark .required {
+    color: red !important;
+}
+
+/* rtl-layout css */
+
+.rtl-layout .patient-card-header .close-model {
+    position: absolute;
+    left: 15px;
+    right: auto;
+}
+
+.rtl-layout .v-select__slot label {
+    left: 30px !important;
+    right: auto;
+    position: absolute;
+}
+  

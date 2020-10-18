@@ -1,0 +1,101 @@
+.vgt-pull-left {
+    float: none !important;
+    display: inline-block !important;
+}
+.vgt-pull-right {   
+    float: left !important;
+}
+table.vgt-table td, .vgt-table thead th 
+{
+    border-bottom: none !important;
+    padding: 1.2em .75em 1.2em 1em !important;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #464D69;
+    height: 3.75rem;
+}
+table.vgt-table 
+{
+    border: none !important;
+}
+.vgt-table.striped tbody tr:hover, .theme--light .vgt-table.striped tbody tr:nth-of-type(odd):hover 
+{
+    background-color: #eee;    
+}
+.vgt-wrap__actions-footer {
+    border: 1px solid rgba(0,0,0,0.12);
+    margin-bottom: 20px;
+    border-bottom: 0px;
+}
+.vgt-wrap__footer.vgt-clearfix {
+    margin-top: -70px !important;
+    z-index: 1 !important;
+    border: none !important;
+    background: none !important;
+    margin-bottom: 20px;
+}
+
+/* theme--dark css */
+.theme--dark .vgt-table thead th
+{
+    background-color: #434f5a !important;
+    background: none !important;
+}
+.theme--dark.rtl-layout .vgt-wrap__footer.vgt-clearfix {
+    text-align: left; 
+} 
+
+/* theme--light css */
+.theme--light .vgt-table.striped tbody tr:nth-of-type(odd) 
+{
+    background-color: #fff;
+}
+.theme--light .vgt-table thead th 
+{
+    background: none;
+}
+
+/* rtl-layout css */
+.theme--light.rtl-layout .vgt-wrap__footer.vgt-clearfix {
+    text-align: left; 
+}
+
+/*page theme based*/
+.vgt-wrap__footer .footer__navigation__page-btn .chevron.right::after
+{
+    border-left: 6px solid var(--v-primary-base);
+}
+.vgt-wrap__footer .footer__navigation__page-btn .chevron.left::after {
+    border-right: 6px solid var(--v-primary-base);
+}
+
+
+
+/* On screens that are 768px or less */
+@media screen and (max-width: 767px) {
+
+    .vgt-wrap__footer .footer__navigation__info {
+        display: inline-block !important;
+    }
+    .vgt-pull-right {
+        float: left !important;
+    }
+    .vgt-pull-left {
+        float: none !important;
+        display: inline-block !important;
+    }
+    .app-card .app-card-content {
+        padding: 1.25rem 1rem;
+    }
+    .pa-3.text-right {
+        padding: 23px 0px !important;
+    }
+    .vgt-wrap__footer .footer__navigation__info
+    {
+        margin: 0px !important;
+    }
+    .vgt-wrap__footer .footer__navigation__page-btn {
+        margin-left: 0px !important;
+    }
+    
+  }

@@ -1,0 +1,101 @@
+.chat-content .v-expansion-panel__header {
+    background: #f7f7f7;
+}
+
+.chat-content .v-list .v-list__tile {
+    height: auto;
+    padding: 0.5rem 1rem;
+}
+
+.chat-content .chat-user-icon {
+    width: 35px;
+    height: 35px;
+}
+
+.chat-content .v-list__tile__content h6 {
+    margin-top: 3px;
+    margin-bottom: 0px !important;
+}
+
+.chat-content .v-btn--floating {
+    height: 20px;
+    width: 20px;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 10px;
+}
+
+.vs__dropdown-menu {
+    position: static;
+}
+
+.chat-wrapper .status-icon {
+    margin-bottom: -2px;
+    margin-right: -2px;
+}
+
+.chat-wrapper .status-icon::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50% !important;
+    border: 2px solid #fff;
+}
+
+.chat-wrapper .chat-log-message {
+    margin: auto;
+    font-size: 15px;
+    background: #ffe6e6;
+    padding: 1px 15px;
+    border-radius: 15px;
+    font-style: oblique;
+    font-family: -webkit-pictograph;
+}
+
+.chat-option-menu {
+    visibility: hidden;
+    margin-top: 15px;
+    position: absolute;
+    right: 72px;
+}
+
+.show-chat-option-menu {
+    visibility: visible !important;
+}
+
+.chat-option-menu .v-btn{
+    width: initial;
+    margin-left: 0px;
+    margin-right: 0px;
+  
+}
+
+.deleted-message-icon-area {
+    border-radius: 5px 5px 5px 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+}
+ .deleted-message-icon {
+    font-size: 13px;
+    padding-bottom: 4px;
+    font-weight: bold;
+ }
+
+ .chat-message-clear-icon {
+    margin-left: -16px;
+    margin-bottom: -16px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 100;
+    font-size: 20px !important;
+}
+ 
+.edited-icon {
+    font-size: 15px !important;
+    padding: 0px 5px;
+    margin-top: -20px;
+}

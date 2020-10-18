@@ -1,0 +1,46 @@
+.v-card__title {
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+.v-treeview {
+    margin-left: -5px;
+}
+.v-treeview-node--leaf {
+    margin-left: 20px;
+}
+
+.v-input--selection-controls {
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.v-messages.theme--light {
+    min-height: auto;
+}
+
+.v-input.v-input--selection-controls.v-input--checkbox.theme--light {
+    flex: initial;
+}
+
+.v-card__text {
+    padding-bottom: 0px;
+}
+.close-model {
+    float: right;
+}
+
+.v-input--selection-controls:not(.v-input--hide-details) .v-input__slot {
+    margin-bottom: 8px;
+}
+.v-treeview-node__label {
+    display: none;
+}
+
+.userGroupSub{
+    padding-left: 30px;
+}
+
+.custom-v-tab {
+    border: 1px solid #c3c3c3;
+    border-radius: 3px;
+}

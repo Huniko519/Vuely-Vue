@@ -1,0 +1,51 @@
+.sub-header {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+.subHeaderDiv {
+    background: white;
+    margin: 0em 0em 1em 1em;
+}
+.subHeaderDiv:first-child {
+    margin-left: 0px;
+}
+.subHeaderDiv .f_2 {
+    font-size: 12px;
+}
+.fixed-div {
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+.scrollArea {
+    height: auto;
+    overflow-y: auto;
+}
+.overview-toolbar {
+    z-index: 1;
+}
+.theme--dark .ps:hover > .ps__scrollbar-x-rail:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+.theme--dark.v-divider {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.v-list__tile_location_dropdown {
+    cursor: pointer !important;
+    background: #fff !important;
+}
+
+.v-list__tile_location_dropdown:hover {
+    background: #e6e6e6 !important;
+}
+
+.v-list__tile {
+    height: 40px;
+}
+
+.patient-overview-v-speed-dial {
+    position: fixed !important;
+    align-items: flex-end;
+}

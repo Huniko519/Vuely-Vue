@@ -1,0 +1,320 @@
+<template>
+    <div class="pos-absolute fixed-div d-custom-flex flex-column w-100">
+        <!-- Secondary Header -->
+        <v-toolbar class="overview-toolbar">
+            <span v-if="isAdmin() && status !== 'Pending'">Status :</span>
+            <v-menu offset-y v-if="isAdmin() && status !== 'Pending'">
+                <template v-slot:activator="{ on }">
+                    <v-btn flat color="primary" v-on="on">{{ status }}</v-btn>
+                </template>
+                <v-list v-if="isAdmin()">
+                    <v-list-tile
+                        v-for="(item, index) in [
+                            'Active',
+                            'Inactive'
+                        ]"
+                        :key="index"
+                    >
+                        <v-list-tile-title
+                            @click="change_status(item)"
+                            style="cursor:pointer"
+                        >{{ item }}</v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
+            <span v-if="selectedUser.user">
+                <span v-if="isAdmin() && status !== 'Pending'">&nbsp; | &nbsp;</span>
+                Email : {{ selectedUser.user.email }}
+            </span>
+        </v-toolbar>
+
+        <v-container fluid grid-list-xl scrollArea>
+            <!-- Tabs | Will show only for users -->
+            <v-tabs v-model="tab" class="mb-4">
+                <v-tab
+                    key="#tab-clients"
+                    href="#tab-clients"
+                >{{ isAdmin() ? "Clients" : "Allowed User Groups" }}</v-tab>
+                <v-tab-item key="tab-clients" value="tab-clients">
+                    <v-card flat tile>
+                        <v-card-text>
+                            <DataTable
+                                :columns="clientsColumns"
+                                :searchEnable="isAdmin() ? true : false"
+                                :rows="clients"
+                                type="clients"
+                            />
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+            </v-tabs>
+
+            <!-- main content area -->
+            <app-card :heading="$t('message.activity')" colClasses="activity-widget-wrap pa-0">
+                <div class="activity-widget">
+                    <a
+                        @click="
+                        activities = [];
+                        new_activities = [];
+                        getUserActivities(); no_of_new_activities=0;"
+                        v-if="no_of_new_activities"
+                    >There are {{no_of_new_activities}}+ new activities. Click here to see.</a>
+
+                    <vue-perfect-scrollbar
+                        @ps-scroll-up="onScroll"
+                        style="max-height:500px;overflow-y:auto"
+                        class="activity-scroll"
+                    >
+                        <Timeline
+                            :items="activities"
+                            :newitems="new_activities"
+                            :show_recent="show_recent"
+                            :log_dtype="log_dtype"
+                            @get_other_logs="get_other_logs"
+                        ></Timeline>
+                    </vue-perfect-scrollbar>
+                </div>
+            </app-card>
+        </v-container>
+    </div>
+</template>
+
+<script>
+import moment from "moment";
+import { vm } from "@/main";
+import ApiService from "@/common/api.service";
+
+import DataTable from "@/components/table/datatable";
+import Timeline from "@/components/timeline/timeline";
+
+import ApiUrl from "@/config";
+
+export default {
+    name: "UserOverview",
+    components: {
+        Timeline,
+        DataTable
+    },
+    data() {
+        return {
+            tab: null,
+            status: "Active",
+
+            log_dtype: "last",
+            latest_date: new Date(),
+            oldest_date: new Date(),
+            show_recent: false,
+
+            type: this.$route.path.split("/")[1],
+            id: this.$route.params.id,
+            activities: [],
+            new_activities: [],
+            no_of_new_activities: 0,
+            selectedUser: {},
+
+            clients: [],
+
+            clientsColumns: [
+                {
+                    text: "First Name",
+                    value: "user_first_name",
+                    class: this.isAdmin() ? "" : "d-none"
+                },
+                {
+                    text: "Last Name",
+                    value: "user_last_name",
+                    class: this.isAdmin() ? "" : "d-none"
+                },
+                {
+                    text: "Client Name",
+                    value: "name",
+                    class: this.isAdmin() ? "" : "d-none"
+                },
+                {
+                    text: "Client Group",
+                    value: "client_group",
+                    class: this.isAdmin() ? "" : "d-none"
+                },
+                {
+                    text: "User Group",
+                    value: "user_group"
+                },
+                {
+                    text: "Status",
+                    value: "status"
+                },
+                {
+                    text: "Created",
+                    value: "createdAt",
+                    formatFn: this.dateOutputFormat,
+                    class: this.type === "clients" ? "" : "d-none"
+                }
+            ]
+        };
+    },
+    sockets: {
+        "new-activity-log": function(fetchedData) {
+            if (
+                this.isAdmin() &&
+                this.$route.params.id == fetchedData.data[0].user_id
+            ) {
+                this.no_of_new_activities = this.no_of_new_activities + 1;
+            } else {
+                if (
+                    this.getAuthClient("_id") ==
+                        fetchedData.data[0].client_id &&
+                    this.$route.params.id == fetchedData.data[0].user_id
+                ) {
+                    this.no_of_new_activities = this.no_of_new_activities + 1;
+                }
+            }
+        }
+    },
+    created() {
+        vm.$on("FetchPageData", this.getDetails);
+    },
+    beforeDestroy() {
+        vm.$off("FetchPageData", this.getDetails);
+    },
+    mounted() {
+        window.moment = require("moment-timezone");
+        let timezone = this.getAuthUser("timezone") || "UTC";
+        moment.tz.setDefault(timezone);
+        this.getDetails();
+    },
+    methods: {
+        get_other_logs(type, extraInfo) {
+            if (type == "new") this.getmoreActivities(type);
+            else if (type == "mid") {
+                this.latest_date = extraInfo.latest;
+                this.oldest_date = extraInfo.oldest;
+                this.getmoreActivities(type);
+            }
+        },
+        getDetails() {
+            let type = this.$route.path.split("/")[1];
+            let id = this.$route.params.id;
+
+            ApiService.get("users_overview", {
+                id: id,
+                req_activity: this.$route.params.log
+            }).then(response => {
+                let user = response.user;
+                this.selectedUser = {
+                    name: user.first_name + " " + user.last_name,
+                    type: "user",
+                    id: user._id,
+                    user
+                };
+                this.activities = user.activity.reverse();
+
+                if (this.activities.length > 0) {
+                    this.latest_date = this.activities[0].createdAt;
+                    this.oldest_date = this.activities[
+                        this.activities.length - 1
+                    ].createdAt;
+                }
+                this.show_recent = response.show_recent;
+
+                this.clients = user.clients;
+                this.status = user.status;
+
+                setTimeout(() => {
+                    const container = this.$el.querySelector(
+                        ".activity-scroll"
+                    );
+                    container.scrollTop = container.scrollHeight;
+                }, 0);
+
+                this.no_of_new_activities = 0;
+
+                this.$emit(
+                    "emitselectedUserInfoFromOverview",
+                    this.selectedUser
+                );
+            });
+        },
+        getUserActivities() {
+            let type = this.$route.path.split("/")[1];
+            let id = this.$route.params.id;
+
+            ApiService.get("user_activities", {
+                loadingPartial: true,
+                id: id,
+                req_activity: this.$route.params.log
+            }).then(response => {
+                this.activities = response.activities.reverse();
+
+                if (this.activities.length > 0) {
+                    this.latest_date = this.activities[0].createdAt;
+                    this.oldest_date = this.activities[
+                        this.activities.length - 1
+                    ].createdAt;
+                }
+                this.show_recent = response.show_recent;
+
+                setTimeout(() => {
+                    const container = this.$el.querySelector(
+                        ".activity-scroll"
+                    );
+                    container.scrollTop = container.scrollHeight;
+                }, 0);
+            });
+        },
+        onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
+            if (scrollTop <= 0) {
+                this.getmoreActivities("last");
+            }
+        },
+        getmoreActivities(log_type) {
+            let type = this.$route.path.split("/")[1];
+            let id = this.$route.params.id;
+            ApiService.get("more_activities", {
+                offset: this.activities.length,
+                id: id,
+                type: type,
+                latest_date: this.latest_date,
+                oldest_date: this.oldest_date,
+                log_type: log_type
+            }).then(response => {
+                this.new_activities = response.activity;
+                if (this.activities.length > 0) {
+                    if (log_type === "new") {
+                        this.latest_date = this.activities[0].createdAt;
+                        this.show_recent = false;
+                    } else if (
+                        log_type === "last" &&
+                        this.new_activities.length > 0
+                    ) {
+                        this.oldest_date = this.new_activities[
+                            this.new_activities.length - 1
+                        ].createdAt;
+                    }
+                }
+
+                const container = this.$el.querySelector(".activity-scroll");
+                container.scrollTop = 28;
+            });
+        },
+        dateOutputFormat: function(value) {
+            return moment(value.createdAt).fromNow();
+        },
+        change_status(status) {
+            let type = this.$route.path.split("/")[1];
+            let id = this.$route.params.id;
+
+            ApiService.put("/update_status", {
+                id: id,
+                type: type,
+                status: status
+            }).then(response => {
+                this.status = status;
+            });
+        }
+    }
+};
+</script>
+
+<style scoped>
+@import "./Overview.scss";
+</style>

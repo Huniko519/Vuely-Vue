@@ -1,0 +1,45 @@
+  /* theme--light css */
+  
+  .client-btn.v-btn--floating.v-btn--small {
+      z-index: 99;
+  }
+  
+  .client-card-header {
+      display: -webkit-inline-box;
+      position: relative;
+  }
+  
+  .client-card-header .close-model {
+      position: absolute;
+      right: 15px;
+  }
+  
+  .v-input__prepend-outer {
+      margin-right: 20px !important;
+  }
+  
+  .required {
+      color: red;
+  }
+  
+  .success--text {
+      color: #246962 !important;
+  }
+  /* theme--dark css */
+  
+  .theme--dark .required {
+      color: red !important;
+  }
+  /* rtl-layout css */
+  
+  .rtl-layout .client-card-header .close-model {
+      position: absolute;
+      left: 15px;
+      right: auto;
+  }
+  
+  .rtl-layout .v-select__slot label {
+      left: 30px !important;
+      right: auto;
+      position: absolute;
+  }
